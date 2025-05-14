@@ -1,0 +1,20 @@
+
+C:\Users\Lavish\CS_IA\delivery-portal
+├── App.jsx
+├── backend
+├── delivery-portal
+├── frontend
+├── LICENSE
+├── LICENSE.txt
+├── node_modules
+├── package-lock.json
+├── package.json
+├── README.md
+├── tailwind.config.js
+└── tree_structure.txt
+
+directory: 4 file: 8
+
+
+
+[2K[1G

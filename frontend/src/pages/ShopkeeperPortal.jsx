@@ -1,58 +1,70 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import StatusDropdown from '../components/StatusDropdown';
 
 const ShopkeeperPortal = () => {
   const [orders, setOrders] = useState([]);
-  const shopkeeperId = '12345'; // Replace with actual shopkeeper ID
 
-  // Fetch shopkeeper orders from the backend API
+  // Fetch orders from API
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/orders/shopkeeper/${shopkeeperId}`);
-        setOrders(response.data);
-      } catch (err) {
-        console.error('Error fetching orders:', err);
+        const response = await axios.get('/api/orders', {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        });
+        setOrders(response.data.orders);
+      } catch (error) {
+        console.error('Error fetching orders:', error.message);
       }
     };
     fetchOrders();
-  }, [shopkeeperId]);
+  }, []);
 
   // Update order status
   const updateOrderStatus = async (orderId, status) => {
     try {
-      const response = await axios.put(`http://localhost:5000/api/orders/${orderId}/status`, { status });
-      setOrders(
-        orders.map((order) =>
-          order._id === orderId ? { ...order, deliveryStatus: response.data.deliveryStatus } : order
+      await axios.put(
+        `/api/orders/${orderId}/status`,
+        { status },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        }
+      );
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order._id === orderId ? { ...order, status } : order
         )
       );
     } catch (error) {
-      alert('Failed to update status.');
+      console.error('Error updating order status:', error.message);
     }
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Shopkeeper Portal</h1>
-      {orders.map((order) => (
-        <div
-          key={order._id}
-          className="border p-4 mb-2 rounded shadow"
-        >
-          <p>
-            <strong>Customer Address:</strong> {order.deliveryAddress}
-          </p>
-          <p>
-            <strong>Status:</strong> {order.deliveryStatus}
-          </p>
-          <StatusDropdown
-            currentStatus={order.deliveryStatus}
-            onUpdate={(status) => updateOrderStatus(order._id, status)}
-          />
-        </div>
-      ))}
+    <div className="p-4 bg-gray-50 dark:bg-gray-900 min-h-screen text-black dark:text-white">
+      <h1 className="text-2xl font-bold mb-4">Shopkeeper Dashboard</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {orders.map((order) => (
+          <div
+            key={order._id}
+            className="border p-4 rounded shadow bg-white dark:bg-gray-800"
+          >
+            <h2 className="text-lg font-semibold">Order #{order._id}</h2>
+            <p>Customer: {order.customerId?.name || 'N/A'}</p>
+            <p>Total Amount: ₹{order.totalAmount}</p>
+            <p>Status: {order.status}</p>
+            <select
+              value={order.status}
+              onChange={(e) => updateOrderStatus(order._id, e.target.value)}
+              className="mt-2 p-2 border rounded"
+            >
+              <option value="Pending">Pending</option>
+              <option value="Processing">Processing</option>
+              <option value="Delivered">Delivered</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

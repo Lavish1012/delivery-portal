@@ -11,7 +11,7 @@ const CustomerPortal = () => {
   // Fetch items from API
   useEffect(() => {
     const fetchItems = async () => {
-      const response = await axios.get('/api/items'); // Fetch all items
+      const response = await axios.get('/api/items'); // Proxy will handle the backend URL
       setItems(response.data);
     };
     fetchItems();

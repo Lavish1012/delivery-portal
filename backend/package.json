@@ -1,0 +1,35 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "description": "",
+  "dependencies": {
+    "bcrypt": "5.1.1",
+    "cors": "2.8.5",
+    "dotenv": "16.5.0",
+    "express": "5.1.0",
+    "jsonwebtoken": "9.0.2",
+    "mongoose": "8.14.1"
+  },
+  "resolutions": {
+    "semver": "7.5.4",
+    "@babel/traverse": "7.23.2",
+    "follow-redirects": "1.15.4"
+  },
+  "overrides": {
+    "semver": "7.5.4",
+    "@babel/traverse": "7.23.2",
+    "follow-redirects": "1.15.4"
+  }
+}
