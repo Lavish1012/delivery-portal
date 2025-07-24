@@ -31,7 +31,7 @@ const OrderManagement = () => {
   };
 
   return (
-    <div className="p-4 bg-gray-50 dark:bg-gray-900 min-h-screen text-black dark:text-white">
+    <div className="p-4 bg-transparent min-h-screen text-white">
       <h1 className="text-3xl font-bold mb-4">Order Management</h1>
       <table className="w-full border-collapse border border-gray-300">
         <thead>

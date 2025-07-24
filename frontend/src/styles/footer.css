@@ -1,0 +1,31 @@
+/* styles/footer.css */
+
+.footer-link {
+  color: #e5e7eb; /* Light gray text color, good for dark backgrounds */
+  background-color: transparent; /* Start with no background */
+  position: relative; /* Needed for any potential future pseudo-elements if desired */
+  display: inline-block; /* Allows padding and background */
+  padding: 4px 8px; /* Add some padding so background hover is visible */
+  border-radius: 4px; /* Slightly rounded corners for the background */
+  text-decoration: none; /* Remove default underline from <a> tags */
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out; /* Smooth transition for background and text color */
+  cursor: pointer; /* Indicate it's clickable */
+}
+
+.footer-link:hover,
+.footer-link:focus {
+  background-color: #D78D3A; /* A warm accent color for hover, taken from previous mask */
+  color: #ffffff; /* White text for better contrast on the accent background */
+}
+
+/*
+  The .footer-link-text class is still on the span inside the <a>.
+  If there are no specific styles for it beyond what's inherited from .footer-link,
+  we don't need to define it here. The color change will apply to the text
+  within .footer-link due to inheritance or direct application.
+*/
+
+/*
+  Old .footer-link-mask styles are removed as the element is no longer in the HTML.
+  Old .footer-link-text specific hover styles are also removed as the effect is now on .footer-link.
+*/

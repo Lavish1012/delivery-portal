@@ -65,12 +65,7 @@ app.use(express.static(path.join(__dirname, '../frontend/build')));
 // SPA handler - serves index.html for all unmatched routes
 // This must be the last route handler
 app.use((req, res) => {
-  // Check for API routes that somehow made it here
-  if (req.originalUrl.startsWith('/api')) {
-    res.status(404).json({ message: 'API endpoint not found' });
-  } else {
-    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
-  }
+  res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
 
 // Error handling middleware - must be last
@@ -86,6 +81,7 @@ const HOST = 'localhost';
 const server = app.listen(PORT, HOST, () => {
   console.log(`Server running at http://${HOST}:${PORT}`);
   console.log('Try accessing the test endpoint at http://localhost:5000/api/test');
+  console.log('Server is working');
 }).on('error', (error) => {
   console.error('Server error:', error);
   if (error.code === 'EADDRINUSE') {

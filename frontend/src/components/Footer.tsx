@@ -1,7 +1,9 @@
+import { Link } from 'react-router-dom';
+
 const Footer = () => {
   return (
     <footer
-      className="bg-indigo-800 dark:bg-gray-900 text-white py-12"
+      className="bg-indigo-800 dark:bg-[#1A1A1C] text-white py-12"
       role="contentinfo"
       aria-label="Footer"
     >
@@ -11,27 +13,21 @@ const Footer = () => {
             <h3 className="font-semibold text-yellow-400 mb-4">For Shoppers</h3>
             <ul className="space-y-2">
               <li>
-                <a
-                  href="#"
-                  className="text-gray-300 hover:text-yellow-400 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                >
+                <Link to="/" className="text-gray-200 bg-transparent relative inline-block px-2 py-1 rounded no-underline transition-colors duration-300 ease-in-out cursor-pointer hover:bg-[#D78D3A] hover:text-white focus:bg-[#D78D3A] focus:text-white hover-text">
                   How It Works
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
-                  className="text-gray-300 hover:text-yellow-400 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                >
+                <Link to="/faq" className="text-gray-200 bg-transparent relative inline-block px-2 py-1 rounded no-underline transition-colors duration-300 ease-in-out cursor-pointer hover:bg-[#D78D3A] hover:text-white focus:bg-[#D78D3A] focus:text-white hover-text">
                   FAQ
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
         </div>
         <div className="mt-12 text-center">
           <p className="text-gray-400 text-sm">
-            © {new Date().getFullYear()} LocalMarket Connect. All rights reserved.
+            © {new Date().getFullYear()} Smart Bazaar. All rights reserved.
           </p>
         </div>
       </div>

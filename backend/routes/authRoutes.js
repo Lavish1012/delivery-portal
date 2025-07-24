@@ -50,7 +50,7 @@ router.post('/signup', async (req, res) => {
 // Login
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, rememberMe } = req.body; // Added rememberMe
 
     // Find the user
     const user = await User.findOne({ email });
@@ -64,11 +64,14 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
+    // Set token expiry: 1h by default, 7d if rememberMe is true
+    const expiresIn = rememberMe ? '7d' : '1h';
+
     // Generate token
     const token = jwt.sign(
       { id: user._id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: '1h' }
+      { expiresIn }
     );
 
     // Return user info (excluding password)
@@ -78,11 +81,23 @@ router.post('/login', async (req, res) => {
     res.status(200).json({
       message: 'Login successful',
       user: userResponse,
-      token
+      token,
+      expiresIn // Inform client of expiry
     });
   } catch (error) {
     res.status(500).json({ message: 'Error logging in', error: error.message });
   }
+});
+
+// Logout (stateless for JWT)
+/**
+ * @route POST /logout
+ * @desc  Instructs client to remove JWT. For stateless JWT, logout is handled client-side.
+ */
+router.post('/logout', (req, res) => {
+  // For JWT, logout is handled by the client removing the token.
+  // Optionally, you can implement token blacklisting for advanced security.
+  res.status(200).json({ message: 'Logged out successfully. Please remove the token on the client.' });
 });
 
 // Get current user

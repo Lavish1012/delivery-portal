@@ -1,0 +1,101 @@
+/* Hover Effects CSS */
+
+/* Button hover effects */
+.hover-grow {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-grow:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Card hover effects */
+.hover-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.hover-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-color: #D78D3A;
+}
+
+/* Link hover effects */
+.hover-link {
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.hover-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background-color: #D78D3A;
+  transition: width 0.3s ease;
+}
+
+.hover-link:hover::after {
+  width: 100%;
+}
+
+.dark .hover-link::after {
+  background-color: #FFA94D;
+}
+
+/* Icon hover effects */
+.hover-icon {
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.hover-icon:hover {
+  transform: translateY(-3px);
+  color: #D78D3A;
+}
+
+.dark .hover-icon:hover {
+  color: #FFA94D;
+}
+
+/* Footer link hover effect */
+.footer-link {
+  position: relative;
+  display: inline-block;
+  color: #BDBDBD;
+  transition: color 0.3s ease;
+  overflow: hidden;
+}
+
+.footer-link-text {
+  position: relative;
+  z-index: 1;
+}
+
+.footer-link-mask {
+  position: absolute;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  background-color: #D78D3A;
+  transition: width 0.3s ease;
+}
+
+.footer-link:hover {
+  color: #F3ECE7;
+}
+
+.footer-link:hover .footer-link-mask {
+  width: 100%;
+}
+
+.dark .footer-link-mask {
+  background-color: #FFA94D;
+}
+
+.dark .footer-link:hover {
+  color: #F2F2F2;
+}

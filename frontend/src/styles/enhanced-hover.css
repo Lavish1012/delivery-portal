@@ -1,0 +1,18 @@
+/* enhanced-hover.css - Minimized version */
+
+/* Text hover underline effect */
+/* This creates an animated underline on text elements with the .hover-text class. */
+.hover-text::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px; /* Adjust if text has descenders or for different font sizes */
+  left: 0;
+  background-color: #F2A65A; /* Consider using a CSS variable linked to Tailwind theme if possible */
+  transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hover-text:hover::after {
+  width: 100%;
+}
