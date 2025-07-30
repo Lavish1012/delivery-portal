@@ -20,6 +20,9 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
+app.use('/api/analytics', require('./routes/analytics'));
+
+
 // Request logging middleware
 app.use((req, res, next) => {
   const timestamp = new Date().toISOString();

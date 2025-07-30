@@ -1,59 +1,35 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { DarkModeProvider } from "./context/DarkModeContext";
-import { AnimatePresence } from "framer-motion";
-import Navbar from "./components/Navbar";
-import Home from "./pages/Home";
-import PageTransition from "./components/PageTransition";
-import CustomCursor from "./components/CustomCursor";
-import Footer from "./components/Footer";
-import React from "react";
-import ShopkeeperPortal from "./pages/ShopkeeperPortal";
-import CustomerPortal from "./pages/CustomerPortal";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Navbar          from './components/Navbar';
+import HomePage        from './pages/Home';
+import LoginPage       from './pages/Login.jsx';
+import SignupPage      from './pages/Signup.jsx';
+import SellerDashboard from './pages/SellerDashboard';
+import { DarkModeProvider } from './context/DarkModeContext';
 
-const App = () => {
+const PrivateRoute: React.FC<{ children: JSX.Element }> = ({ children }) =>
+  localStorage.getItem('token') ? children : <Navigate to="/login" replace />;
+
+export default function App() {
   return (
     <DarkModeProvider>
-      <Router>
-        <div className="min-h-screen bg-[#FAF6F2] dark:bg-[#1A1A1C] overflow-hidden">
-          <CustomCursor />
-          <Navbar />
-          <AnimatePresence mode="wait">
-            <Routes>
-              <Route path="/" element={
-                <PageTransition>
-                  <Home />
-                </PageTransition>
-              } />
-              <Route path="/shopkeeper" element={
-                <PageTransition>
-                  <ShopkeeperPortal />
-                </PageTransition>
-              } />
-              <Route path="/customer" element={
-                <PageTransition>
-                  <CustomerPortal />
-                </PageTransition>
-              } />
-              <Route path="/login" element={
-                <PageTransition>
-                  <Login />
-                </PageTransition>
-              } />
-              <Route path="/signup" element={
-                <PageTransition>
-                  <Signup />
-                </PageTransition>
-              } />
-              {/* Add more routes as needed */}
-            </Routes>
-          </AnimatePresence>
-          <Footer />
-        </div>
-      </Router>
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          <Route path="/"                     element={<HomePage />} />
+          <Route path="/login"                element={<LoginPage />} />
+          <Route path="/signup"               element={<SignupPage />} />
+          <Route
+            path="/dashboard/*"
+            element={
+              <PrivateRoute>
+                <SellerDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
     </DarkModeProvider>
   );
-};
-
-export default App;
+}

@@ -1,253 +1,105 @@
-import { useDarkMode } from "../context/DarkModeContext";
-import { ChevronDown, Download, Menu, Moon, ShoppingBag, Store, Sun, UserCircle, X } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence, easeInOut } from "framer-motion";
+import { useState } from 'react';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Sun, Moon, Menu, X, ShoppingBag, Store } from 'lucide-react';
+import { useDarkMode } from '../context/DarkModeContext';
 
 const Navbar = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const navigate   = useNavigate();
+  const signedIn   = !!localStorage.getItem('token');
 
-  // Handle scroll effect
-  useEffect(() => {
-    const handleScroll = () => {
-      const offset = window.scrollY;
-      if (offset > 50) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
+  const Item: React.FC<{ to: string; label: string }> = ({ to, label }) => (
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        `block px-4 py-2 md:py-0 md:px-0 text-sm font-medium 
+         ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300'}
+         hover:text-blue-600 dark:hover:text-blue-400`
       }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
-  const toggleDropdown = (name: string) => {
-    setActiveDropdown(activeDropdown === name ? null : name);
-  };
-  
-  // Animation variants
-  const navbarVariants = {
-    hidden: { opacity: 0, y: -25 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { 
-        duration: 0.5, 
-        ease: easeInOut 
-      }
-    }
-  };
-  
-  const mobileMenuVariants = {
-    hidden: { opacity: 0, height: 0 },
-    visible: { 
-      opacity: 1, 
-      height: "auto",
-      transition: { 
-        duration: 0.3, 
-        ease: easeInOut 
-      }
-    },
-    exit: { 
-      opacity: 0, 
-      height: 0,
-      transition: { 
-        duration: 0.3, 
-        ease: easeInOut 
-      }
-    }
-  };
-
-  return (
-    <motion.header
-      initial="hidden"
-      animate="visible"
-      variants={navbarVariants}
-      className={`sticky top-0 z-50 ${scrolled ? 'bg-opacity-90 backdrop-blur-sm' : ''} bg-white dark:bg-[#1A1A1C] border-b border-gray-200 dark:border-[#2B2B2E] text-gray-900 dark:text-white transition-all duration-300`}
-      role="navigation"
-      aria-label="Main Navigation"
+      onClick={() => setMobileOpen(false)}
     >
-      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        {/* Logo */}
-        <div className="flex items-center space-x-2">
-          <span className="text-xl font-bold text-gray-900 dark:text-white">
-            Smart <span className="text-[#D78D3A]">Bazaar</span>
-          </span>
-        </div>
+      {label}
+    </NavLink>
+  );
 
-        {/* Navigation Links */}
-        <div className="hidden md:flex items-center space-x-6">
-          {/* Buyers Dropdown */}
+  /* ------------- MARK-UP ------------- */
+  return (
+    <header className="sticky top-0 z-50 bg-white/90 dark:bg-gray-900/90
+                       border-b border-gray-200 dark:border-gray-700 backdrop-blur">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+
+        {/* Logo */}
+        <Link to="/" className="text-xl font-bold text-gray-900 dark:text-white">
+          Smart <span className="text-[#D78D3A]">Bazaar</span>
+        </Link>
+
+        {/* Desktop nav */}
+        <nav className="hidden md:flex items-center gap-8">
+          <Item to="/"          label="Home" />
+          {signedIn && <Item to="/dashboard" label="Dashboard" />}
           <div className="relative group">
-            <button 
-              className="flex items-center px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-[#2B2B2E] transition-colors text-gray-700 dark:text-[#F2F2F2] group"
-              onClick={() => toggleDropdown('buyers')}
-            >
-              <ShoppingBag className="h-4 w-4 mr-1" />
-              <span>Buyers</span>
-              <ChevronDown className={`h-4 w-4 ml-1 transition-transform duration-200 ${activeDropdown === 'buyers' ? 'rotate-180' : ''}`} />
+            <button className="flex items-center gap-1 text-sm font-medium">
+              Buyers <ShoppingBag className="h-4 w-4" />
             </button>
-            <div className={`absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-[#2B2B2E] ring-1 ring-gray-200 dark:ring-black ring-opacity-5 transition-all duration-200 ease-in-out transform origin-top-left ${activeDropdown === 'buyers' ? 'scale-100 opacity-100' : 'scale-95 opacity-0 pointer-events-none'}`}>
-              <div className="py-1">
-                <Link to="/buyers/browse" className="block px-4 py-2 text-sm text-gray-700 dark:text-[#F2F2F2] hover:bg-gray-100 dark:hover:bg-[#3A3A3D] hover:text-[#D78D3A]">Browse Products</Link>
-                <Link to="/buyers/orders" className="block px-4 py-2 text-sm text-gray-700 dark:text-[#F2F2F2] hover:bg-gray-100 dark:hover:bg-[#3A3A3D] hover:text-[#D78D3A]">My Orders</Link>
-                <Link to="/buyers/wishlist" className="block px-4 py-2 text-sm text-gray-700 dark:text-[#F2F2F2] hover:bg-gray-100 dark:hover:bg-[#3A3A3D] hover:text-[#D78D3A]">Wishlist</Link>
-              </div>
+            {/* Dropdown */}
+            <div className="absolute left-0 top-full hidden group-hover:block
+                            bg-white dark:bg-gray-800 rounded shadow-lg mt-2 min-w-[10rem]">
+              <Item to="/buyers/browse"   label="Browse Products" />
+              <Item to="/buyers/orders"   label="My Orders" />
+              <Item to="/buyers/wishlist" label="Wishlist" />
             </div>
           </div>
-          
-          {/* Sellers Dropdown */}
-          <motion.div 
-            className="relative group"
-            whileHover={{ y: -2 }}
-            transition={{ type: "spring", stiffness: 400, damping: 17 }}
-          >
-            <button 
-              className="flex items-center px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-[#2B2B2E] transition-colors text-gray-700 dark:text-[#F2F2F2] group"
-              onClick={() => toggleDropdown('sellers')}
-            >
-              <Store className="h-4 w-4 mr-1" />
-              <span>Sellers</span>
-              <ChevronDown className={`h-4 w-4 ml-1 transition-transform duration-200 ${activeDropdown === 'sellers' ? 'rotate-180' : ''}`} />
+
+          <div className="relative group">
+            <button className="flex items-center gap-1 text-sm font-medium">
+              Sellers <Store className="h-4 w-4" />
             </button>
-            <div className={`absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-[#2B2B2E] ring-1 ring-gray-200 dark:ring-black ring-opacity-5 transition-all duration-200 ease-in-out transform origin-top-left ${activeDropdown === 'sellers' ? 'scale-100 opacity-100' : 'scale-95 opacity-0 pointer-events-none'}`}>
-              <div className="py-1">
-                <Link to="/sellers/dashboard" className="block px-4 py-2 text-sm text-gray-700 dark:text-[#F2F2F2] hover:bg-gray-100 dark:hover:bg-[#3A3A3D] hover:text-[#D78D3A]">Dashboard</Link>
-                <Link to="/sellers/products" className="block px-4 py-2 text-sm text-gray-700 dark:text-[#F2F2F2] hover:bg-gray-100 dark:hover:bg-[#3A3A3D] hover:text-[#D78D3A]">Manage Products</Link>
-                <Link to="/sellers/orders" className="block px-4 py-2 text-sm text-gray-700 dark:text-[#F2F2F2] hover:bg-gray-100 dark:hover:bg-[#3A3A3D] hover:text-[#D78D3A]">Orders</Link>
-              </div>
+            {/* Dropdown */}
+            <div className="absolute left-0 top-full hidden group-hover:block
+                            bg-white dark:bg-gray-800 rounded shadow-lg mt-2 min-w-[10rem]">
+              <Item to="/dashboard"            label="Dashboard" />
+              <Item to="/dashboard/inventory"  label="Products"   />
+              <Item to="/dashboard/billing"    label="Billing"    />
             </div>
-          </motion.div>
-          
-          <Link 
-            to="/download" 
-            className="flex items-center px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-[#2B2B2E] transition-colors text-gray-700 dark:text-[#F2F2F2]"
-          >
-            <Download className="h-4 w-4 mr-1" />
-            <span>Download App</span>
-          </Link>
-          
-          <Link 
-            to="/login" 
-            className="flex items-center px-4 py-2 ml-2 bg-[#D78D3A] hover:bg-[#C07C33] text-white font-medium rounded-md transition-colors"
-          >
-            <UserCircle className="h-4 w-4 mr-1" />
-            <span>Sign In</span>
-          </Link>
-          <Link 
-            to="/signup" 
-            className="flex items-center px-4 py-2 ml-2 bg-transparent border border-[#D78D3A] text-[#D78D3A] font-medium rounded-md transition-colors hover:bg-[#D78D3A] hover:text-white"
-          >
-            <UserCircle className="h-4 w-4 mr-1" />
-            <span>Sign Up</span>
-          </Link>
-        </div>
+          </div>
+        </nav>
 
-        {/* Mobile Menu & Dark Mode Toggle */}
-        <div className="flex items-center space-x-3">
-        <button
-          aria-label="Toggle Dark Mode"
-          className="p-2 rounded-full bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all duration-200"
-          onClick={toggleDarkMode}
-          title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-        >
-          {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-        </button>
-
-          
-          {/* Mobile menu button */}
+        {/* Right-side controls */}
+        <div className="flex items-center gap-4">
           <button
-            aria-label="Toggle Mobile Menu"
-            className="md:hidden p-2 rounded-full bg-gray-200 dark:bg-[#2B2B2E] text-gray-700 dark:text-white hover:bg-gray-300 dark:hover:bg-[#3A3A3D] focus:outline-none focus:ring-2 focus:ring-[#D78D3A]"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle dark mode"
+            onClick={toggleDarkMode}
+            className="p-2 rounded-full bg-gray-100 dark:bg-gray-700
+                       text-gray-800 dark:text-gray-200 hover:bg-gray-200
+                       dark:hover:bg-gray-600 transition">
+            {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          </button>
+
+          {/* Hamburger */}
+          <button
+            className="md:hidden p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700"
+            onClick={() => setMobileOpen(!mobileOpen)}
           >
-            {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div 
-            className="md:hidden overflow-hidden"
-            variants={mobileMenuVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-          >
-            <div className="px-4 py-3 space-y-1 bg-white dark:bg-[#1A1A1C] border-t border-gray-200 dark:border-[#2B2B2E]">
-          {/* Mobile Buyers Menu */}
-          <motion.div className="py-2" initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-            <button
-              className="flex items-center w-full px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-[#2B2B2E] transition-colors text-gray-700 dark:text-[#F2F2F2]"
-              onClick={() => toggleDropdown('mobile-buyers')}
-            >
-              <ShoppingBag className="h-4 w-4 mr-1" />
-              <span>Buyers</span>
-              <ChevronDown className={`h-4 w-4 ml-1 transition-transform duration-200 ${activeDropdown === 'mobile-buyers' ? 'rotate-180' : ''}`} />
-            </button>
-            {activeDropdown === 'mobile-buyers' && (
-              <div className="pl-6 mt-1 space-y-1">
-                <Link to="/buyers/browse" className="block px-4 py-2 text-sm text-gray-700 dark:text-[#F2F2F2] hover:bg-gray-100 dark:hover:bg-[#3A3A3D] hover:text-[#D78D3A]">Browse Products</Link>
-                <Link to="/buyers/orders" className="block px-4 py-2 text-sm text-gray-700 dark:text-[#F2F2F2] hover:bg-gray-100 dark:hover:bg-[#3A3A3D] hover:text-[#D78D3A]">My Orders</Link>
-                <Link to="/buyers/wishlist" className="block px-4 py-2 text-sm text-gray-700 dark:text-[#F2F2F2] hover:bg-gray-100 dark:hover:bg-[#3A3A3D] hover:text-[#D78D3A]">Wishlist</Link>
-              </div>
-            )}
-          </motion.div>
-
-          {/* Mobile Sellers Menu */}
-          <motion.div className="py-2" initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-            <button
-              className="flex items-center w-full px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-[#2B2B2E] transition-colors text-gray-700 dark:text-[#F2F2F2]"
-              onClick={() => toggleDropdown('mobile-sellers')}
-            >
-              <Store className="h-4 w-4 mr-1" />
-              <span>Sellers</span>
-              <ChevronDown className={`h-4 w-4 ml-1 transition-transform duration-200 ${activeDropdown === 'mobile-sellers' ? 'rotate-180' : ''}`} />
-            </button>
-            {activeDropdown === 'mobile-sellers' && (
-              <div className="pl-6 mt-1 space-y-1">
-                <Link to="/sellers/dashboard" className="block px-4 py-2 text-sm text-gray-700 dark:text-[#F2F2F2] hover:bg-gray-100 dark:hover:bg-[#3A3A3D] hover:text-[#D78D3A]">Dashboard</Link>
-                <Link to="/sellers/products" className="block px-4 py-2 text-sm text-gray-700 dark:text-[#F2F2F2] hover:bg-gray-100 dark:hover:bg-[#3A3A3D] hover:text-[#D78D3A]">Manage Products</Link>
-                <Link to="/sellers/orders" className="block px-4 py-2 text-sm text-gray-700 dark:text-[#F2F2F2] hover:bg-gray-100 dark:hover:bg-[#3A3A3D] hover:text-[#D78D3A]">Orders</Link>
-              </div>
-            )}
-          </motion.div>
-
-          <Link 
-            to="/download" 
-            className="flex items-center px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-[#2B2B2E] transition-colors text-gray-700 dark:text-[#F2F2F2]"
-          >
-            <Download className="h-4 w-4 mr-1" />
-            <span>Download App</span>
-          </Link>
-
-          <Link 
-            to="/login" 
-            className="flex items-center px-4 py-2 ml-2 bg-[#D78D3A] hover:bg-[#C07C33] text-white font-medium rounded-md transition-colors"
-          >
-            <UserCircle className="h-4 w-4 mr-1" />
-            <span>Sign In</span>
-          </Link>
-          <Link 
-            to="/signup" 
-            className="flex items-center px-4 py-2 ml-2 bg-transparent border border-[#D78D3A] text-[#D78D3A] font-medium rounded-md transition-colors hover:bg-[#D78D3A] hover:text-white"
-          >
-            <UserCircle className="h-4 w-4 mr-1" />
-            <span>Sign Up</span>
-          </Link>
+      {/* Mobile drawer */}
+      {mobileOpen && (
+        <div className="md:hidden bg-white dark:bg-gray-900 border-t
+                        border-gray-200 dark:border-gray-700">
+          <Item to="/"          label="Home" />
+          {signedIn && <Item to="/dashboard" label="Dashboard" />}
+          <Item to="/buyers/browse"   label="Browse Products" />
+          <Item to="/buyers/orders"   label="My Orders" />
+          <Item to="/buyers/wishlist" label="Wishlist" />
+          <Item to="/dashboard/inventory" label="Products" />
+          <Item to="/dashboard/billing"   label="Billing"  />
         </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.header>
+      )}
+    </header>
   );
 };
 
